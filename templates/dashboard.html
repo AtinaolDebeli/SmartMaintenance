@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Maintenance Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="navbar">
+    <h2>🔧 Smart Maintenance</h2>
+
+    <div>
+        <a href="/">Dashboard</a>
+        <a href="/equipment">Equipment</a>
+        <a href="/technicians">Technicians</a>
+        <a href="/workorders">Work Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h1>📊 Dashboard</h1>
+
+    <p>
+        Welcome, <strong>{{ username }}</strong>
+        | Role: <strong>{{ role }}</strong>
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="icon">📦</div>
+            <h3>Equipment</h3>
+            <div class="number">{{ equipment_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="icon">👨‍🔧</div>
+            <h3>Technicians</h3>
+            <div class="number">{{ technician_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="icon">🛠️</div>
+            <h3>Work Orders</h3>
+            <div class="number">{{ workorder_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="icon">⏳</div>
+            <h3>Pending</h3>
+            <div class="number">{{ pending_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="icon">🔄</div>
+            <h3>In Progress</h3>
+            <div class="number">{{ progress_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="icon">✅</div>
+            <h3>Completed</h3>
+            <div class="number">{{ completed_count }}</div>
+        </div>
+
+    </div>
+
+    <div class="quick-menu">
+
+        <h2>Quick Actions</h2>
+
+        <a class="button" href="/equipment">
+            📦 Manage Equipment
+        </a>
+
+        <a class="button" href="/technicians">
+            👨‍🔧 Manage Technicians
+        </a>
+
+        <a class="button" href="/workorders">
+            🛠️ Manage Work Orders
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
