@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Equipment Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="navbar">
+    <h2>🔧 Smart Maintenance</h2>
+
+    <div>
+        <a href="/">Dashboard</a>
+        <a href="/equipment">Equipment</a>
+        <a href="/technicians">Technicians</a>
+        <a href="/workorders">Work Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h1>📦 Equipment Management</h1>
+
+    <div class="form-box">
+
+        <h2>Add Equipment</h2>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Equipment name"
+                required
+            >
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Location"
+            >
+
+            <button type="submit">
+                ➕ Add Equipment
+            </button>
+
+        </form>
+
+    </div>
+
+    <h2>Equipment List</h2>
+
+    <div class="table-container">
+
+        <table>
+
+            <tr>
+                <th>ID</th>
+                <th>Equipment</th>
+                <th>Location</th>
+                <th>Action</th>
+            </tr>
+
+            {% for item in equipment %}
+
+            <tr>
+
+                <td>{{ item["id"] }}</td>
+
+                <td>{{ item["name"] }}</td>
+
+                <td>{{ item["location"] }}</td>
+
+                <td>
+                    <a
+                        class="delete-button"
+                        href="/equipment/delete/{{ item['id'] }}"
+                        onclick="return confirm('Delete this equipment?')"
+                    >
+                        🗑️ Delete
+                    </a>
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="4">
+                    No equipment registered yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
