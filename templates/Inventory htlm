@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Store Inventory</title>
+</head>
+
+<body>
+
+<h1>📦 Store & Inventory</h1>
+
+<form method="POST">
+
+<input name="item" placeholder="Item name">
+
+<input name="quantity" placeholder="Quantity">
+
+<input name="minimum" placeholder="Minimum stock">
+
+<button>Add Item</button>
+
+</form>
+
+
+<h2>Inventory List</h2>
+
+{% for i in items %}
+
+<p>
+{{i.id}} -
+{{i.item}}
+-
+Quantity: {{i.quantity}}
+</p>
+
+{% endfor %}
+
+
+<a href="/">Back Dashboard</a>
+
+</body>
+</html>
