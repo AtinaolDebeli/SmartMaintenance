@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Preventive Maintenance</title>
+</head>
+
+
+<body>
+
+<h1>📅 Preventive Maintenance</h1>
+
+
+<form method="POST">
+
+<input name="equipment"
+placeholder="Equipment">
+
+<input name="schedule"
+placeholder="Daily / Weekly / Monthly">
+
+<input name="next_date"
+placeholder="Next date">
+
+
+<button>Add Schedule</button>
+
+</form>
+
+
+
+{% for p in preventive %}
+
+<p>
+{{p.equipment}}
+-
+{{p.schedule}}
+-
+{{p.next_date}}
+</p>
+
+{% endfor %}
+
+
+<a href="/">Dashboard</a>
+
+
+</body>
+</html>
