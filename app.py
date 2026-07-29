@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, send_file
 import sqlite3
+import os
+from datetime import datetime
 
 app = Flask(__name__)
+
 app.secret_key = "smart-maintenance-secret-key"
 
 DATABASE = "maintenance.db"
@@ -14,75 +17,137 @@ def get_db():
 
 
 def create_database():
+
     conn = get_db()
     cursor = conn.cursor()
 
+
+    # USERS
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            role TEXT NOT NULL
-        )
+    CREATE TABLE IF NOT EXISTS users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        password TEXT,
+        role TEXT
+    )
     """)
 
+
+    # EQUIPMENT
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS equipment (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            location TEXT
-        )
+    CREATE TABLE IF NOT EXISTS equipment(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        category TEXT,
+        location TEXT,
+        photo TEXT,
+        qr_code TEXT,
+        status TEXT DEFAULT 'Active'
+    )
     """)
 
+
+    # TECHNICIANS
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS technicians (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            skill TEXT,
-            phone TEXT
-        )
+    CREATE TABLE IF NOT EXISTS technicians(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        skill TEXT,
+        phone TEXT
+    )
     """)
 
+
+    # WORK ORDERS
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS workorders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            equipment TEXT,
-            problem TEXT NOT NULL,
-            technician TEXT,
-            priority TEXT,
-            status TEXT NOT NULL DEFAULT 'Pending'
-        )
+    CREATE TABLE IF NOT EXISTS workorders(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        equipment TEXT,
+        problem TEXT,
+        technician TEXT,
+        priority TEXT,
+        status TEXT DEFAULT 'Pending',
+        date TEXT
+    )
     """)
 
-    cursor.execute("SELECT * FROM users WHERE username = ?", ("admin",))
 
-    if cursor.fetchone() is None:
+    # INVENTORY
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS inventory(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item TEXT,
+        quantity INTEGER,
+        minimum INTEGER
+    )
+    """)
+
+
+    # SUPPLIERS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS suppliers(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        phone TEXT,
+        item TEXT
+    )
+    """)
+
+
+    # PREVENTIVE MAINTENANCE
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS preventive(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        equipment TEXT,
+        schedule TEXT,
+        next_date TEXT
+    )
+    """)
+
+
+    # DEFAULT ADMIN
+    user = cursor.execute(
+        "SELECT * FROM users WHERE username='admin'"
+    ).fetchone()
+
+
+    if user is None:
+
         cursor.execute("""
-            INSERT INTO users (username, password, role)
-            VALUES (?, ?, ?)
-        """, ("admin", "1234", "Admin"))
+        INSERT INTO users
+        (username,password,role)
+        VALUES(?,?,?)
+        """,
+        (
+            "admin",
+            "1234",
+            "Admin"
+        ))
+
 
     conn.commit()
     conn.close()
 
 
+
 create_database()
+# LOGIN
 
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET","POST"])
 def login():
 
     if request.method == "POST":
 
-        username = request.form.get("username", "")
-        password = request.form.get("password", "")
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         conn = get_db()
 
         user = conn.execute("""
-            SELECT * FROM users
-            WHERE username = ? AND password = ?
-        """, (username, password)).fetchone()
+        SELECT * FROM users
+        WHERE username=? AND password=?
+        """,
+        (username,password)).fetchone()
 
         conn.close()
 
@@ -95,11 +160,14 @@ def login():
 
         return render_template(
             "login.html",
-            error="Invalid username or password"
+            error="Invalid login"
         )
 
     return render_template("login.html")
 
+
+
+# DASHBOARD
 
 @app.route("/")
 def dashboard():
@@ -107,258 +175,338 @@ def dashboard():
     if "user_id" not in session:
         return redirect("/login")
 
+
     conn = get_db()
 
-    equipment_count = conn.execute(
+    equipment = conn.execute(
         "SELECT COUNT(*) FROM equipment"
     ).fetchone()[0]
 
-    technician_count = conn.execute(
+
+    technicians = conn.execute(
         "SELECT COUNT(*) FROM technicians"
     ).fetchone()[0]
 
-    workorder_count = conn.execute(
+
+    jobs = conn.execute(
         "SELECT COUNT(*) FROM workorders"
     ).fetchone()[0]
 
-    pending_count = conn.execute("""
-        SELECT COUNT(*) FROM workorders
-        WHERE status = 'Pending'
-    """).fetchone()[0]
 
-    progress_count = conn.execute("""
-        SELECT COUNT(*) FROM workorders
-        WHERE status = 'In Progress'
-    """).fetchone()[0]
+    stock = conn.execute(
+        "SELECT COUNT(*) FROM inventory"
+    ).fetchone()[0]
 
-    completed_count = conn.execute("""
-        SELECT COUNT(*) FROM workorders
-        WHERE status = 'Completed'
-    """).fetchone()[0]
 
     conn.close()
+
 
     return render_template(
         "dashboard.html",
         username=session["username"],
-        role=session["role"],
-        equipment_count=equipment_count,
-        technician_count=technician_count,
-        workorder_count=workorder_count,
-        pending_count=pending_count,
-        progress_count=progress_count,
-        completed_count=completed_count
+        equipment=equipment,
+        technicians=technicians,
+        jobs=jobs,
+        stock=stock
     )
 
 
-@app.route("/equipment", methods=["GET", "POST"])
-def equipment():
+
+# EQUIPMENT
+
+@app.route("/equipment", methods=["GET","POST"])
+def equipment_page():
 
     if "user_id" not in session:
         return redirect("/login")
 
-    conn = get_db()
 
-    if request.method == "POST":
+    conn=get_db()
 
-        name = request.form.get("name", "")
-        location = request.form.get("location", "")
 
-        if name:
-            conn.execute("""
-                INSERT INTO equipment (name, location)
-                VALUES (?, ?)
-            """, (name, location))
+    if request.method=="POST":
 
-            conn.commit()
+        name=request.form.get("name")
+        category=request.form.get("category")
+        location=request.form.get("location")
 
-    equipment_list = conn.execute("""
-        SELECT * FROM equipment
-        ORDER BY id DESC
+        conn.execute("""
+        INSERT INTO equipment
+        (name,category,location)
+        VALUES(?,?,?)
+        """,
+        (
+            name,
+            category,
+            location
+        ))
+
+        conn.commit()
+
+
+    data=conn.execute("""
+    SELECT * FROM equipment
+    ORDER BY id DESC
     """).fetchall()
 
+
     conn.close()
+
 
     return render_template(
         "equipment.html",
-        equipment=equipment_list
+        equipment=data
     )
 
 
-@app.route("/equipment/delete/<int:id>")
-def delete_equipment(id):
+
+# TECHNICIANS
+
+@app.route("/technicians", methods=["GET","POST"])
+def technician_page():
 
     if "user_id" not in session:
         return redirect("/login")
 
-    conn = get_db()
 
-    conn.execute(
-        "DELETE FROM equipment WHERE id = ?",
-        (id,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    return redirect("/equipment")
+    conn=get_db()
 
 
-@app.route("/technicians", methods=["GET", "POST"])
-def technicians():
+    if request.method=="POST":
 
-    if "user_id" not in session:
-        return redirect("/login")
+        name=request.form.get("name")
+        skill=request.form.get("skill")
+        phone=request.form.get("phone")
 
-    conn = get_db()
 
-    if request.method == "POST":
+        conn.execute("""
+        INSERT INTO technicians
+        (name,skill,phone)
+        VALUES(?,?,?)
+        """,
+        (
+            name,
+            skill,
+            phone
+        ))
 
-        name = request.form.get("name", "")
-        skill = request.form.get("skill", "")
-        phone = request.form.get("phone", "")
 
-        if name:
-            conn.execute("""
-                INSERT INTO technicians (name, skill, phone)
-                VALUES (?, ?, ?)
-            """, (name, skill, phone))
+        conn.commit()
 
-            conn.commit()
 
-    technician_list = conn.execute("""
-        SELECT * FROM technicians
-        ORDER BY id DESC
+
+    data=conn.execute("""
+    SELECT * FROM technicians
+    ORDER BY id DESC
     """).fetchall()
 
+
     conn.close()
+
 
     return render_template(
         "technicians.html",
-        technicians=technician_list
+        technicians=data
     )
 
 
-@app.route("/technicians/delete/<int:id>")
-def delete_technician(id):
+
+# WORK ORDERS
+
+@app.route("/workorders", methods=["GET","POST"])
+def workorders_page():
 
     if "user_id" not in session:
         return redirect("/login")
 
-    conn = get_db()
 
-    conn.execute(
-        "DELETE FROM technicians WHERE id = ?",
-        (id,)
-    )
+    conn=get_db()
 
-    conn.commit()
+
+    if request.method=="POST":
+
+        equipment=request.form.get("equipment")
+        problem=request.form.get("problem")
+        technician=request.form.get("technician")
+        priority=request.form.get("priority")
+
+
+        conn.execute("""
+        INSERT INTO workorders
+        (equipment,problem,technician,priority,date)
+        VALUES(?,?,?,?,?)
+        """,
+        (
+            equipment,
+            problem,
+            technician,
+            priority,
+            datetime.now()
+        ))
+
+
+        conn.commit()
+
+
+
+    jobs=conn.execute("""
+    SELECT * FROM workorders
+    ORDER BY id DESC
+    """).fetchall()
+
+
     conn.close()
 
-    return redirect("/technicians")
-
-
-@app.route("/workorders", methods=["GET", "POST"])
-def workorders():
-
-    if "user_id" not in session:
-        return redirect("/login")
-
-    conn = get_db()
-
-    if request.method == "POST":
-
-        equipment = request.form.get("equipment", "")
-        problem = request.form.get("problem", "")
-        technician = request.form.get("technician", "")
-        priority = request.form.get("priority", "Medium")
-
-        if problem:
-            conn.execute("""
-                INSERT INTO workorders
-                (equipment, problem, technician, priority, status)
-                VALUES (?, ?, ?, ?, 'Pending')
-            """, (
-                equipment,
-                problem,
-                technician,
-                priority
-            ))
-
-            conn.commit()
-
-    workorder_list = conn.execute("""
-        SELECT * FROM workorders
-        ORDER BY id DESC
-    """).fetchall()
-
-    equipment_list = conn.execute("""
-        SELECT * FROM equipment
-        ORDER BY name
-    """).fetchall()
-
-    technician_list = conn.execute("""
-        SELECT * FROM technicians
-        ORDER BY name
-    """).fetchall()
-
-    conn.close()
 
     return render_template(
         "workorders.html",
-        workorders=workorder_list,
-        equipment=equipment_list,
-        technicians=technician_list
-    )
+        workorders=jobs
+    )# INVENTORY / STORE
 
-
-@app.route("/workorders/status/<int:id>/<status>")
-def update_status(id, status):
-
-    if "user_id" not in session:
-        return redirect("/login")
-
-    allowed_statuses = [
-        "Pending",
-        "In Progress",
-        "Completed"
-    ]
-
-    if status not in allowed_statuses:
-        return redirect("/workorders")
-
-    conn = get_db()
-
-    conn.execute("""
-        UPDATE workorders
-        SET status = ?
-        WHERE id = ?
-    """, (status, id))
-
-    conn.commit()
-    conn.close()
-
-    return redirect("/workorders")
-
-
-@app.route("/workorders/delete/<int:id>")
-def delete_workorder(id):
+@app.route("/inventory", methods=["GET","POST"])
+def inventory():
 
     if "user_id" not in session:
         return redirect("/login")
 
     conn = get_db()
 
-    conn.execute(
-        "DELETE FROM workorders WHERE id = ?",
-        (id,)
-    )
+    if request.method=="POST":
 
-    conn.commit()
+        item = request.form.get("item")
+        quantity = request.form.get("quantity")
+        minimum = request.form.get("minimum")
+
+
+        conn.execute("""
+        INSERT INTO inventory
+        (item,quantity,minimum)
+        VALUES(?,?,?)
+        """,
+        (
+            item,
+            quantity,
+            minimum
+        ))
+
+        conn.commit()
+
+
+    items = conn.execute("""
+    SELECT * FROM inventory
+    ORDER BY id DESC
+    """).fetchall()
+
+
     conn.close()
 
-    return redirect("/workorders")
 
+    return render_template(
+        "inventory.html",
+        items=items
+    )
+
+
+
+# SUPPLIERS
+
+@app.route("/suppliers", methods=["GET","POST"])
+def suppliers():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+
+    conn=get_db()
+
+
+    if request.method=="POST":
+
+        name=request.form.get("name")
+        phone=request.form.get("phone")
+        item=request.form.get("item")
+
+
+        conn.execute("""
+        INSERT INTO suppliers
+        (name,phone,item)
+        VALUES(?,?,?)
+        """,
+        (
+            name,
+            phone,
+            item
+        ))
+
+        conn.commit()
+
+
+    data=conn.execute("""
+    SELECT * FROM suppliers
+    ORDER BY id DESC
+    """).fetchall()
+
+
+    conn.close()
+
+
+    return render_template(
+        "suppliers.html",
+        suppliers=data
+    )
+
+
+
+# PREVENTIVE MAINTENANCE
+
+@app.route("/preventive", methods=["GET","POST"])
+def preventive():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+
+    conn=get_db()
+
+
+    if request.method=="POST":
+
+        equipment=request.form.get("equipment")
+        schedule=request.form.get("schedule")
+        next_date=request.form.get("next_date")
+
+
+        conn.execute("""
+        INSERT INTO preventive
+        (equipment,schedule,next_date)
+        VALUES(?,?,?)
+        """,
+        (
+            equipment,
+            schedule,
+            next_date
+        ))
+
+        conn.commit()
+
+
+    data=conn.execute("""
+    SELECT * FROM preventive
+    ORDER BY id DESC
+    """).fetchall()
+
+
+    conn.close()
+
+
+    return render_template(
+        "preventive.html",
+        preventive=data
+    )
+
+
+
+# LOGOUT
 
 @app.route("/logout")
 def logout():
@@ -368,9 +516,14 @@ def logout():
     return redirect("/login")
 
 
-if __name__ == "__main__":
+
+# START PROGRAM
+
+if __name__=="__main__":
+
     app.run(
         host="0.0.0.0",
         port=5000,
         debug=True
-      )
+        )
+    
