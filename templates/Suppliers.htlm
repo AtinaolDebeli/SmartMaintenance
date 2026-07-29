@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Suppliers</title>
+</head>
+
+<body>
+
+<h1>🚚 Suppliers</h1>
+
+
+<form method="POST">
+
+<input name="name" placeholder="Supplier name">
+
+<input name="phone" placeholder="Phone">
+
+<input name="item" placeholder="Supplied item">
+
+<button>Add Supplier</button>
+
+</form>
+
+
+{% for s in suppliers %}
+
+<p>
+{{s.name}} -
+{{s.phone}} -
+{{s.item}}
+</p>
+
+{% endfor %}
+
+
+<a href="/">Dashboard</a>
+
+</body>
+</html>
