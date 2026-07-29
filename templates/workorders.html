@@ -1,217 +1,133 @@
+
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Work Order Management</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<title>Work Orders - SmartMaintenance</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
+
 
 <body>
 
-<div class="navbar">
-    <h2>🔧 Smart Maintenance</h2>
 
-    <div>
-        <a href="/">Dashboard</a>
-        <a href="/equipment">Equipment</a>
-        <a href="/technicians">Technicians</a>
-        <a href="/workorders">Work Orders</a>
-        <a href="/logout">Logout</a>
-    </div>
+<div class="header">
+
+<h1>🛠 Work Orders</h1>
+
+<a href="/logout">Logout</a>
+
 </div>
 
-<div class="container">
 
-    <h1>🛠️ Work Order Management</h1>
 
-    <div class="form-box">
+<div class="main">
 
-        <h2>Create Work Order</h2>
 
-        <form method="POST">
+<div class="form-box">
 
-            <label>Equipment</label>
+<h2>Create Work Order</h2>
 
-            <select name="equipment">
 
-                <option value="">Select equipment</option>
+<form method="POST">
 
-                {% for item in equipment %}
 
-                <option value="{{ item['name'] }}">
-                    {{ item['name'] }}
-                </option>
+<input 
+name="equipment"
+placeholder="Equipment name">
 
-                {% endfor %}
 
-            </select>
+<textarea
+name="problem"
+placeholder="Describe problem">
+</textarea>
 
 
-            <label>Problem</label>
+<input 
+name="technician"
+placeholder="Assigned technician">
 
-            <input
-                type="text"
-                name="problem"
-                placeholder="Describe the problem"
-                required
-            >
 
+<select name="priority">
 
-            <label>Technician</label>
+<option>Low</option>
 
-            <select name="technician">
+<option selected>Medium</option>
 
-                <option value="">Select technician</option>
+<option>High</option>
 
-                {% for technician in technicians %}
+<option>Emergency</option>
 
-                <option value="{{ technician['name'] }}">
-                    {{ technician['name'] }}
-                </option>
+</select>
 
-                {% endfor %}
 
-            </select>
+<button type="submit">
+Create Work Order
+</button>
 
 
-            <label>Priority</label>
-
-            <select name="priority">
-
-                <option value="Low">Low</option>
-
-                <option value="Medium" selected>
-                    Medium
-                </option>
-
-                <option value="High">High</option>
-
-                <option value="Critical">Critical</option>
-
-            </select>
-
-
-            <button type="submit">
-                ➕ Create Work Order
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <h2>Work Orders</h2>
-
-
-    <div class="table-container">
-
-        <table>
-
-            <tr>
-
-                <th>ID</th>
-                <th>Equipment</th>
-                <th>Problem</th>
-                <th>Technician</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Actions</th>
-
-            </tr>
-
-
-            {% for order in workorders %}
-
-            <tr>
-
-                <td>{{ order["id"] }}</td>
-
-                <td>{{ order["equipment"] }}</td>
-
-                <td>{{ order["problem"] }}</td>
-
-                <td>{{ order["technician"] }}</td>
-
-                <td>
-
-                    {% if order["priority"] == "Critical" %}
-                        🔴 Critical
-
-                    {% elif order["priority"] == "High" %}
-                        🟠 High
-
-                    {% elif order["priority"] == "Medium" %}
-                        🟡 Medium
-
-                    {% else %}
-                        🟢 Low
-
-                    {% endif %}
-
-                </td>
-
-
-                <td>
-
-                    {% if order["status"] == "Completed" %}
-
-                        ✅ Completed
-
-                    {% elif order["status"] == "In Progress" %}
-
-                        🔄 In Progress
-
-                    {% else %}
-
-                        ⏳ Pending
-
-                    {% endif %}
-
-                </td>
-
-
-                <td>
-
-                    <a href="/workorders/status/{{ order['id'] }}/In Progress">
-                        ▶ Start
-                    </a>
-
-                    <br><br>
-
-                    <a href="/workorders/status/{{ order['id'] }}/Completed">
-                        ✅ Complete
-                    </a>
-
-                    <br><br>
-
-                    <a
-                        class="delete-button"
-                        href="/workorders/delete/{{ order['id'] }}"
-                        onclick="return confirm('Delete this work order?')"
-                    >
-                        🗑️ Delete
-                    </a>
-
-                </td>
-
-            </tr>
-
-            {% else %}
-
-            <tr>
-
-                <td colspan="7">
-                    No work orders yet.
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </table>
-
-    </div>
+</form>
 
 </div>
+
+
+
+
+<h2>Work Order List</h2>
+
+
+<table>
+
+<tr>
+
+<th>ID</th>
+<th>Equipment</th>
+<th>Problem</th>
+<th>Technician</th>
+<th>Priority</th>
+<th>Status</th>
+
+</tr>
+
+
+
+{% for w in workorders %}
+
+
+<tr>
+
+<td>{{w.id}}</td>
+
+<td>{{w.equipment}}</td>
+
+<td>{{w.problem}}</td>
+
+<td>{{w.technician}}</td>
+
+<td>{{w.priority}}</td>
+
+<td>{{w.status}}</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+</table>
+
+
+<br>
+
+<a href="/">⬅ Back Dashboard</a>
+
+
+</div>
+
 
 </body>
+
 </html>
