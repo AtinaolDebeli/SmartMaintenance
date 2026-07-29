@@ -1,39 +1,70 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Suppliers</title>
+
+<title>Suppliers - SmartMaintenance</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
 
 <body>
 
-<h1>🚚 Suppliers</h1>
+<div class="header">
+    <h1>🚚 Suppliers</h1>
+    <a href="/logout">Logout</a>
+</div>
 
+<div class="main">
+
+<div class="form-box">
+
+<h2>Add Supplier</h2>
 
 <form method="POST">
 
-<input name="name" placeholder="Supplier name">
+<input name="name" placeholder="Supplier name" required>
 
-<input name="phone" placeholder="Phone">
+<input name="phone" placeholder="Phone number">
 
 <input name="item" placeholder="Supplied item">
 
-<button>Add Supplier</button>
+<button type="submit">Add Supplier</button>
 
 </form>
 
+</div>
+
+<h2>Supplier List</h2>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Item</th>
+</tr>
 
 {% for s in suppliers %}
 
-<p>
-{{s.name}} -
-{{s.phone}} -
-{{s.item}}
-</p>
+<tr>
+<td>{{s.id}}</td>
+<td>{{s.name}}</td>
+<td>{{s.phone}}</td>
+<td>{{s.item}}</td>
+</tr>
 
 {% endfor %}
 
+</table>
 
-<a href="/">Dashboard</a>
+<br>
+
+<a href="/">⬅ Back Dashboard</a>
+
+</div>
 
 </body>
 </html>
