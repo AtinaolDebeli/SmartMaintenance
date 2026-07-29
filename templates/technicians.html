@@ -1,114 +1,121 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Technician Management</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<title>Technicians - SmartMaintenance</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
+
 
 <body>
 
-<div class="navbar">
-    <h2>🔧 Smart Maintenance</h2>
 
-    <div>
-        <a href="/">Dashboard</a>
-        <a href="/equipment">Equipment</a>
-        <a href="/technicians">Technicians</a>
-        <a href="/workorders">Work Orders</a>
-        <a href="/logout">Logout</a>
-    </div>
-</div>
+<div class="header">
 
-<div class="container">
+<h1>👨‍🔧 Technicians</h1>
 
-    <h1>👨‍🔧 Technician Management</h1>
-
-    <div class="form-box">
-
-        <h2>Add Technician</h2>
-
-        <form method="POST">
-
-            <input
-                type="text"
-                name="name"
-                placeholder="Technician name"
-                required
-            >
-
-            <input
-                type="text"
-                name="skill"
-                placeholder="Skill / Specialisation"
-            >
-
-            <input
-                type="text"
-                name="phone"
-                placeholder="Phone number"
-            >
-
-            <button type="submit">
-                ➕ Add Technician
-            </button>
-
-        </form>
-
-    </div>
-
-    <h2>Technician List</h2>
-
-    <div class="table-container">
-
-        <table>
-
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Skill</th>
-                <th>Phone</th>
-                <th>Action</th>
-            </tr>
-
-            {% for technician in technicians %}
-
-            <tr>
-
-                <td>{{ technician["id"] }}</td>
-
-                <td>{{ technician["name"] }}</td>
-
-                <td>{{ technician["skill"] }}</td>
-
-                <td>{{ technician["phone"] }}</td>
-
-                <td>
-                    <a
-                        class="delete-button"
-                        href="/technicians/delete/{{ technician['id'] }}"
-                        onclick="return confirm('Delete this technician?')"
-                    >
-                        🗑️ Delete
-                    </a>
-                </td>
-
-            </tr>
-
-            {% else %}
-
-            <tr>
-                <td colspan="5">
-                    No technicians registered yet.
-                </td>
-            </tr>
-
-            {% endfor %}
-
-        </table>
-
-    </div>
+<a href="/logout">Logout</a>
 
 </div>
+
+
+
+<div class="main">
+
+
+<div class="form-box">
+
+<h2>Add Technician</h2>
+
+
+<form method="POST">
+
+
+<input 
+name="name" 
+placeholder="Technician name"
+required>
+
+
+<input 
+name="skill" 
+placeholder="Skill / Department">
+
+
+<input 
+name="phone" 
+placeholder="Phone number">
+
+
+<button type="submit">
+Add Technician
+</button>
+
+
+</form>
+
+</div>
+
+
+
+
+<h2>Technician List</h2>
+
+
+
+<table>
+
+
+<tr>
+
+<th>ID</th>
+
+<th>Name</th>
+
+<th>Skill</th>
+
+<th>Phone</th>
+
+</tr>
+
+
+
+{% for t in technicians %}
+
+
+<tr>
+
+<td>{{t.id}}</td>
+
+<td>{{t.name}}</td>
+
+<td>{{t.skill}}</td>
+
+<td>{{t.phone}}</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+
+</table>
+
+
+
+<br>
+
+<a href="/">⬅ Back Dashboard</a>
+
+
+</div>
+
+
 
 </body>
+
 </html>
