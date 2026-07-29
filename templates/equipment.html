@@ -1,103 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Equipment Management</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<title>Equipment - SmartMaintenance</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
 
 <body>
 
-<div class="navbar">
-    <h2>🔧 Smart Maintenance</h2>
-
-    <div>
-        <a href="/">Dashboard</a>
-        <a href="/equipment">Equipment</a>
-        <a href="/technicians">Technicians</a>
-        <a href="/workorders">Work Orders</a>
-        <a href="/logout">Logout</a>
-    </div>
+<div class="header">
+    <h1>📦 Equipment Management</h1>
+    <a href="/logout">Logout</a>
 </div>
 
-<div class="container">
 
-    <h1>📦 Equipment Management</h1>
+<div class="main">
 
-    <div class="form-box">
+<div class="form-box">
 
-        <h2>Add Equipment</h2>
+<h2>Add Equipment</h2>
 
-        <form method="POST">
+<form method="POST">
 
-            <input
-                type="text"
-                name="name"
-                placeholder="Equipment name"
-                required
-            >
+<input name="name" placeholder="Equipment name" required>
 
-            <input
-                type="text"
-                name="location"
-                placeholder="Location"
-            >
+<input name="category" placeholder="Category">
 
-            <button type="submit">
-                ➕ Add Equipment
-            </button>
+<input name="location" placeholder="Location">
 
-        </form>
+<button type="submit">
+Add Equipment
+</button>
 
-    </div>
+</form>
 
-    <h2>Equipment List</h2>
+</div>
 
-    <div class="table-container">
 
-        <table>
 
-            <tr>
-                <th>ID</th>
-                <th>Equipment</th>
-                <th>Location</th>
-                <th>Action</th>
-            </tr>
+<h2>Equipment List</h2>
 
-            {% for item in equipment %}
 
-            <tr>
+<table>
 
-                <td>{{ item["id"] }}</td>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Category</th>
+<th>Location</th>
+<th>Status</th>
+</tr>
 
-                <td>{{ item["name"] }}</td>
 
-                <td>{{ item["location"] }}</td>
+{% for e in equipment %}
 
-                <td>
-                    <a
-                        class="delete-button"
-                        href="/equipment/delete/{{ item['id'] }}"
-                        onclick="return confirm('Delete this equipment?')"
-                    >
-                        🗑️ Delete
-                    </a>
-                </td>
+<tr>
 
-            </tr>
+<td>{{e.id}}</td>
 
-            {% else %}
+<td>{{e.name}}</td>
 
-            <tr>
-                <td colspan="4">
-                    No equipment registered yet.
-                </td>
-            </tr>
+<td>{{e.category}}</td>
 
-            {% endfor %}
+<td>{{e.location}}</td>
 
-        </table>
+<td>{{e.status}}</td>
 
-    </div>
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+
+<br>
+
+<a href="/">⬅ Back Dashboard</a>
+
 
 </div>
 
