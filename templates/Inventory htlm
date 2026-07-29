@@ -1,41 +1,70 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Store Inventory</title>
+
+<title>Inventory - SmartMaintenance</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
 </head>
 
 <body>
 
-<h1>📦 Store & Inventory</h1>
+<div class="header">
+    <h1>📦 Store & Inventory</h1>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+
+<div class="form-box">
+
+<h2>Add Inventory Item</h2>
 
 <form method="POST">
 
-<input name="item" placeholder="Item name">
+<input name="item" placeholder="Item name" required>
 
-<input name="quantity" placeholder="Quantity">
+<input name="quantity" type="number" placeholder="Quantity" required>
 
-<input name="minimum" placeholder="Minimum stock">
+<input name="minimum" type="number" placeholder="Minimum stock" required>
 
-<button>Add Item</button>
+<button type="submit">Add Item</button>
 
 </form>
 
+</div>
 
 <h2>Inventory List</h2>
 
+<table>
+
+<tr>
+<th>ID</th>
+<th>Item</th>
+<th>Quantity</th>
+<th>Minimum Stock</th>
+</tr>
+
 {% for i in items %}
 
-<p>
-{{i.id}} -
-{{i.item}}
--
-Quantity: {{i.quantity}}
-</p>
+<tr>
+<td>{{i.id}}</td>
+<td>{{i.item}}</td>
+<td>{{i.quantity}}</td>
+<td>{{i.minimum}}</td>
+</tr>
 
 {% endfor %}
 
+</table>
 
-<a href="/">Back Dashboard</a>
+<br>
+
+<a href="/">⬅ Back Dashboard</a>
+
+</div>
 
 </body>
 </html>
