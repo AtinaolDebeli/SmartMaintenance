@@ -2,48 +2,75 @@
 <html>
 
 <head>
-<title>Preventive Maintenance</title>
-</head>
 
+<title>Preventive Maintenance - SmartMaintenance</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
 
 <body>
 
-<h1>📅 Preventive Maintenance</h1>
+<div class="header">
+    <h1>📅 Preventive Maintenance</h1>
+    <a href="/logout">Logout</a>
+</div>
 
+<div class="main">
+
+<div class="form-box">
+
+<h2>Create Maintenance Schedule</h2>
 
 <form method="POST">
 
-<input name="equipment"
-placeholder="Equipment">
+<input name="equipment" placeholder="Equipment name" required>
 
-<input name="schedule"
-placeholder="Daily / Weekly / Monthly">
+<select name="schedule">
+    <option>Daily</option>
+    <option>Weekly</option>
+    <option>Monthly</option>
+    <option>Quarterly</option>
+    <option>Yearly</option>
+</select>
 
-<input name="next_date"
-placeholder="Next date">
+<input type="date" name="next_date" required>
 
-
-<button>Add Schedule</button>
+<button type="submit">Save Schedule</button>
 
 </form>
 
+</div>
 
+<h2>Scheduled Maintenance</h2>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Equipment</th>
+<th>Schedule</th>
+<th>Next Date</th>
+</tr>
 
 {% for p in preventive %}
 
-<p>
-{{p.equipment}}
--
-{{p.schedule}}
--
-{{p.next_date}}
-</p>
+<tr>
+<td>{{p.id}}</td>
+<td>{{p.equipment}}</td>
+<td>{{p.schedule}}</td>
+<td>{{p.next_date}}</td>
+</tr>
 
 {% endfor %}
 
+</table>
 
-<a href="/">Dashboard</a>
+<br>
 
+<a href="/">⬅ Back Dashboard</a>
+
+</div>
 
 </body>
 </html>
