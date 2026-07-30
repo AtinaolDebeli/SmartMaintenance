@@ -4,10 +4,8 @@
 
 <h2 class="mb-4">Technicians Management</h2>
 
-<div class="row">
-    <div class="col-md-12 mb-3">
-        <button class="btn btn-primary">Add New Technician</button>
-    </div>
+<div class="mb-3">
+    <button class="btn btn-primary">Add New Technician</button>
 </div>
 
 <div class="card">
@@ -16,7 +14,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
+                    <th>Full Name</th>
                     <th>Specialty</th>
                     <th>Phone</th>
                     <th>Actions</th>
@@ -33,6 +31,10 @@
                         <button class="btn btn-sm btn-info">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No technicians added yet</td>
                 </tr>
                 {% endfor %}
             </tbody>
