@@ -1,71 +1,22 @@
 {% extends "base.html" %}
-
 {% block title %}Technicians{% endblock %}
-
 {% block content %}
 
-<h2 class="mb-4">👨‍🔧 Technician Management</h2>
+<h2>Technicians Management</h2>
 
-<div class="card mb-4">
-    <div class="card-body">
+<table class="table">
+  <tr>
+    <th>Name</th>
+    <th>Specialty</th>
+    <th>Phone</th>
+  </tr>
+  {% for tech in technicians %}
+  <tr>
+    <td>{{ tech.name }}</td>
+    <td>{{ tech.specialty }}</td>
+    <td>{{ tech.phone }}</td>
+  </tr>
+  {% endfor %}
+</table>
 
-        <form method="POST">
-
-            <div class="row">
-
-                <div class="col-md-4">
-                    <label>Technician Name</label>
-                    <input type="text" name="name" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label>Skill</label>
-                    <input type="text" name="skill" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label>Phone Number</label>
-                    <input type="text" name="phone" class="form-control" required>
-                </div>
-
-            </div>
-
-            <br>
-
-            <button type="submit" class="btn btn-success">
-                ➕ Add Technician
-            </button>
-
-        </form>
-
-    </div>
-</div>
-
-<div class="card">
-
-    <div class="card-header bg-primary text-white">
-        Technician List
-    </div>
-
-    <div class="card-body">
-
-        <table class="table table-bordered table-hover">
-
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Skill</th>
-                    <th>Phone</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-            {% for tech in technicians %}
-
-            <tr>
-                <td>{{ tech.id }}</td>
-                <td>{{ tech.name }}</td>
-                <td>{{ tech.skill }}</td>
-                <td>{{ tech
+{% endblock %}
