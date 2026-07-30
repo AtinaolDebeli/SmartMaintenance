@@ -1,75 +1,94 @@
-<!DOCTYPE html>
-<html>
-<head>
-<link rel="stylesheet" href="/static/css/style.css">
 
-<title>SmartMaintenance Dashboard</title>
-</head>
-body{
-font-family:Arial;
-background:#f2f5f7;
-}
+{% extends "base.html" %}
 
-.card{
-display:inline-block;
-background:white;
-padding:20px;
-margin:10px;
-border-radius:10px;
-width:180px;
-text-align:center;
-}
+{% block title %}Dashboard{% endblock %}
 
-.menu a{
-margin:10px;
-text-decoration:none;
-}
-</style>
+{% block content %}
 
-</head>
+<h2 class="mb-4">Dashboard</h2>
 
-<body>
+<div class="row">
 
-<h1>🔧 SmartMaintenance</h1>
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1>📦</h1>
+                <h3>{{ stock }}</h3>
+                <p>Spare Parts in Stock</p>
+            </div>
+        </div>
+    </div>
 
-<p>
-Welcome {{username}}
-</p>
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1>🖥</h1>
+                <h3>{{ equipment }}</h3>
+                <p>Equipment</p>
+            </div>
+        </div>
+    </div>
 
-<div class="menu">
-<a href="/equipment">📦 Equipment</a>
-<a href="/technicians">👨‍🔧 Technicians</a>
-<a href="/workorders">🛠 Work Orders</a>
-<a href="/inventory">Store</a>
-<a href="/suppliers">Suppliers</a>
-<a href="/preventive">Maintenance</a>
-<a href="/logout">Logout</a>
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1>👨‍🔧</h1>
+                <h3>{{ technicians }}</h3>
+                <p>Technicians</p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<div class="row">
 
-<div class="card">
-<h2>{{equipment}}</h2>
-<p>Equipment</p>
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1>🛠</h1>
+                <h3>{{ jobs }}</h3>
+                <p>Work Orders</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1>⚠</h1>
+                <h3>0</h3>
+                <p>Low Stock Items</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1>🔔</h1>
+                <h3>0</h3>
+                <p>Notifications</p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<h3 class="mt-4">Quick Actions</h3>
 
-<div class="card">
-<h2>{{technicians}}</h2>
-<p>Technicians</p>
+<div class="mb-4">
+
+<a href="/equipment" class="btn btn-primary">➕ Add Equipment</a>
+
+<a href="/inventory" class="btn btn-success">📦 Inventory</a>
+
+<a href="/workorders" class="btn btn-warning">🛠 Work Orders</a>
+
+<a href="/technicians" class="btn btn-info">👨‍🔧 Technicians</a>
+
+<a href="/suppliers" class="btn btn-secondary">🚚 Suppliers</a>
+
 </div>
 
-
-<div class="card">
-<h2>{{jobs}}</h2>
-<p>Work Orders</p>
-</div>
-
-
-<div class="card">
-<h2>{{stock}}</h2>
-<p>Inventory</p>
-</div>
-
-
-</body>
-</html>
+{% endblock %}
