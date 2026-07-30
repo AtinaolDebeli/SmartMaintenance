@@ -1,70 +1,106 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Inventory{% endblock %}
 
-<title>Inventory - SmartMaintenance</title>
+{% block content %}
 
-<link rel="stylesheet" href="/static/css/style.css">
+<h2 class="mb-4">📦 Spare Parts Inventory</h2>
 
-</head>
+<div class="card mb-4">
+    <div class="card-body">
 
-<body>
+        <form method="POST">
 
-<div class="header">
-    <h1>📦 Store & Inventory</h1>
-    <a href="/logout">Logout</a>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Item Name</label>
+                    <input type="text" name="item" class="form-control" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" class="form-control" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Minimum Stock</label>
+                    <input type="number" name="minimum" class="form-control" required>
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-success">
+                        Add Item
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
-<div class="main">
+<div class="card">
 
-<div class="form-box">
+    <div class="card-header bg-primary text-white">
+        Inventory List
+    </div>
 
-<h2>Add Inventory Item</h2>
+    <div class="card-body">
 
-<form method="POST">
+        <table class="table table-bordered table-hover">
 
-<input name="item" placeholder="Item name" required>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Minimum</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
 
-<input name="quantity" type="number" placeholder="Quantity" required>
+            <tbody>
 
-<input name="minimum" type="number" placeholder="Minimum stock" required>
+            {% for item in items %}
 
-<button type="submit">Add Item</button>
+            <tr>
 
-</form>
+                <td>{{ item.id }}</td>
+                <td>{{ item.item }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.minimum }}</td>
+
+                <td>
+
+                {% if item.quantity <= item.minimum %}
+
+                <span class="badge bg-danger">
+                    Low Stock
+                </span>
+
+                {% else %}
+
+                <span class="badge bg-success">
+                    In Stock
+                </span>
+
+                {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
-<h2>Inventory List</h2>
-
-<table>
-
-<tr>
-<th>ID</th>
-<th>Item</th>
-<th>Quantity</th>
-<th>Minimum Stock</th>
-</tr>
-
-{% for i in items %}
-
-<tr>
-<td>{{i.id}}</td>
-<td>{{i.item}}</td>
-<td>{{i.quantity}}</td>
-<td>{{i.minimum}}</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-<br>
-
-<a href="/">⬅ Back Dashboard</a>
-
-</div>
-
-</body>
-</html>
+{% endblock %}
