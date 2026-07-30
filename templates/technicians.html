@@ -2,21 +2,42 @@
 {% block title %}Technicians{% endblock %}
 {% block content %}
 
-<h2>Technicians Management</h2>
+<h2 class="mb-4">Technicians Management</h2>
 
-<table class="table">
-  <tr>
-    <th>Name</th>
-    <th>Specialty</th>
-    <th>Phone</th>
-  </tr>
-  {% for tech in technicians %}
-  <tr>
-    <td>{{ tech.name }}</td>
-    <td>{{ tech.specialty }}</td>
-    <td>{{ tech.phone }}</td>
-  </tr>
-  {% endfor %}
-</table>
+<div class="row">
+    <div class="col-md-12 mb-3">
+        <button class="btn btn-primary">Add New Technician</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Specialty</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tech in technicians %}
+                <tr>
+                    <td>{{ tech.id }}</td>
+                    <td>{{ tech.name }}</td>
+                    <td>{{ tech.specialty }}</td>
+                    <td>{{ tech.phone }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
