@@ -1,76 +1,84 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Preventive Maintenance{% endblock %}
 
-<title>Preventive Maintenance - SmartMaintenance</title>
+{% block content %}
 
-<link rel="stylesheet" href="/static/css/style.css">
+<h2 class="mb-4">📅 Preventive Maintenance</h2>
 
-</head>
+<div class="card mb-4">
+    <div class="card-body">
 
-<body>
+        <form method="POST">
 
-<div class="header">
-    <h1>📅 Preventive Maintenance</h1>
-    <a href="/logout">Logout</a>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Equipment</label>
+                    <input type="text" name="equipment" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Maintenance Schedule</label>
+                    <input type="text" name="schedule" class="form-control" placeholder="Weekly, Monthly..." required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Next Maintenance Date</label>
+                    <input type="date" name="next_date" class="form-control" required>
+                </div>
+
+            </div>
+
+            <br>
+
+            <button type="submit" class="btn btn-success">
+                ➕ Save Schedule
+            </button>
+
+        </form>
+
+    </div>
 </div>
 
-<div class="main">
+<div class="card">
 
-<div class="form-box">
+    <div class="card-header bg-primary text-white">
+        Maintenance Schedule
+    </div>
 
-<h2>Create Maintenance Schedule</h2>
+    <div class="card-body">
 
-<form method="POST">
+        <table class="table table-bordered table-hover">
 
-<input name="equipment" placeholder="Equipment name" required>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Equipment</th>
+                    <th>Schedule</th>
+                    <th>Next Date</th>
+                </tr>
+            </thead>
 
-<select name="schedule">
-    <option>Daily</option>
-    <option>Weekly</option>
-    <option>Monthly</option>
-    <option>Quarterly</option>
-    <option>Yearly</option>
-</select>
+            <tbody>
 
-<input type="date" name="next_date" required>
+            {% for row in preventive %}
 
-<button type="submit">Save Schedule</button>
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.equipment }}</td>
+                <td>{{ row.schedule }}</td>
+                <td>{{ row.next_date }}</td>
+            </tr>
 
-</form>
+            {% endfor %}
 
-</div>
+            </tbody>
 
-<h2>Scheduled Maintenance</h2>
+        </table>
 
-<table>
-
-<tr>
-<th>ID</th>
-<th>Equipment</th>
-<th>Schedule</th>
-<th>Next Date</th>
-</tr>
-
-{% for p in preventive %}
-
-<tr>
-<td>{{p.id}}</td>
-<td>{{p.equipment}}</td>
-<td>{{p.schedule}}</td>
-<td>{{p.next_date}}</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-<br>
-
-<a href="/">⬅ Back Dashboard</a>
+    </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}
