@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">⚙️ System Settings</h2>
+
+<div class="card">
+
+    <div class="card-header bg-primary text-white">
+        Application Settings
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            <div class="mb-3">
+                <label>Company Name</label>
+                <input type="text" class="form-control"
+                       name="company"
+                       value="SmartMaintenance">
+            </div>
+
+            <div class="mb-3">
+                <label>Administrator Email</label>
+                <input type="email"
+                       class="form-control"
+                       name="email">
+            </div>
+
+            <div class="mb-3">
+                <label>Low Stock Alert</label>
+                <input type="number"
+                       class="form-control"
+                       name="minimum"
+                       value="10">
+            </div>
+
+            <button class="btn btn-success">
+                Save Settings
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
