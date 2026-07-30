@@ -1,70 +1,84 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Suppliers{% endblock %}
 
-<title>Suppliers - SmartMaintenance</title>
+{% block content %}
 
-<link rel="stylesheet" href="/static/css/style.css">
+<h2 class="mb-4">🚚 Supplier Management</h2>
 
-</head>
+<div class="card mb-4">
+    <div class="card-body">
 
-<body>
+        <form method="POST">
 
-<div class="header">
-    <h1>🚚 Suppliers</h1>
-    <a href="/logout">Logout</a>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Supplier Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Supplied Item</label>
+                    <input type="text" name="item" class="form-control" required>
+                </div>
+
+            </div>
+
+            <br>
+
+            <button type="submit" class="btn btn-success">
+                ➕ Add Supplier
+            </button>
+
+        </form>
+
+    </div>
 </div>
 
-<div class="main">
+<div class="card">
 
-<div class="form-box">
+    <div class="card-header bg-primary text-white">
+        Supplier List
+    </div>
 
-<h2>Add Supplier</h2>
+    <div class="card-body">
 
-<form method="POST">
+        <table class="table table-bordered table-hover">
 
-<input name="name" placeholder="Supplier name" required>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Supplier Name</th>
+                    <th>Phone</th>
+                    <th>Supplied Item</th>
+                </tr>
+            </thead>
 
-<input name="phone" placeholder="Phone number">
+            <tbody>
 
-<input name="item" placeholder="Supplied item">
+            {% for supplier in suppliers %}
 
-<button type="submit">Add Supplier</button>
+            <tr>
+                <td>{{ supplier.id }}</td>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.phone }}</td>
+                <td>{{ supplier.item }}</td>
+            </tr>
 
-</form>
+            {% endfor %}
 
-</div>
+            </tbody>
 
-<h2>Supplier List</h2>
+        </table>
 
-<table>
-
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Phone</th>
-<th>Item</th>
-</tr>
-
-{% for s in suppliers %}
-
-<tr>
-<td>{{s.id}}</td>
-<td>{{s.name}}</td>
-<td>{{s.phone}}</td>
-<td>{{s.item}}</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-<br>
-
-<a href="/">⬅ Back Dashboard</a>
+    </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}
