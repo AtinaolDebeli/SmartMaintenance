@@ -1,133 +1,101 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html>
+{% block title %}Work Orders{% endblock %}
 
-<head>
+{% block content %}
 
-<title>Work Orders - SmartMaintenance</title>
+<h2 class="mb-4">🛠 Work Orders</h2>
 
-<link rel="stylesheet" href="/static/css/style.css">
+<div class="card mb-4">
+    <div class="card-body">
 
-</head>
+        <form method="POST">
 
+            <div class="row">
 
-<body>
+                <div class="col-md-3">
+                    <label>Equipment</label>
+                    <input type="text" name="equipment" class="form-control" required>
+                </div>
 
+                <div class="col-md-3">
+                    <label>Problem</label>
+                    <input type="text" name="problem" class="form-control" required>
+                </div>
 
-<div class="header">
+                <div class="col-md-2">
+                    <label>Technician</label>
+                    <input type="text" name="technician" class="form-control" required>
+                </div>
 
-<h1>🛠 Work Orders</h1>
+                <div class="col-md-2">
+                    <label>Priority</label>
+                    <select name="priority" class="form-control">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
 
-<a href="/logout">Logout</a>
+                <div class="col-md-2 d-grid">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary">
+                        Create
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-header bg-primary text-white">
+        Work Order List
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Equipment</th>
+                    <th>Problem</th>
+                    <th>Technician</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for job in workorders %}
+
+            <tr>
+                <td>{{ job.id }}</td>
+                <td>{{ job.equipment }}</td>
+                <td>{{ job.problem }}</td>
+                <td>{{ job.technician }}</td>
+                <td>{{ job.priority }}</td>
+                <td>{{ job.status }}</td>
+                <td>{{ job.date }}</td>
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
-
-
-<div class="main">
-
-
-<div class="form-box">
-
-<h2>Create Work Order</h2>
-
-
-<form method="POST">
-
-
-<input 
-name="equipment"
-placeholder="Equipment name">
-
-
-<textarea
-name="problem"
-placeholder="Describe problem">
-</textarea>
-
-
-<input 
-name="technician"
-placeholder="Assigned technician">
-
-
-<select name="priority">
-
-<option>Low</option>
-
-<option selected>Medium</option>
-
-<option>High</option>
-
-<option>Emergency</option>
-
-</select>
-
-
-<button type="submit">
-Create Work Order
-</button>
-
-
-</form>
-
-</div>
-
-
-
-
-<h2>Work Order List</h2>
-
-
-<table>
-
-<tr>
-
-<th>ID</th>
-<th>Equipment</th>
-<th>Problem</th>
-<th>Technician</th>
-<th>Priority</th>
-<th>Status</th>
-
-</tr>
-
-
-
-{% for w in workorders %}
-
-
-<tr>
-
-<td>{{w.id}}</td>
-
-<td>{{w.equipment}}</td>
-
-<td>{{w.problem}}</td>
-
-<td>{{w.technician}}</td>
-
-<td>{{w.priority}}</td>
-
-<td>{{w.status}}</td>
-
-</tr>
-
-
-{% endfor %}
-
-
-</table>
-
-
-<br>
-
-<a href="/">⬅ Back Dashboard</a>
-
-
-</div>
-
-
-</body>
-
-</html>
+{% endblock %}
